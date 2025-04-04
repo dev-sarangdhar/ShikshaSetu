@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments - ShikshaSetu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #112762;
+            --secondary: #ffcc00;
+            --dark-bg: #0a0a0a;
+            --dark-card: #1a1a1a;
+            --light-bg: #f5f7fa;
+            --light-card: #ffffff;
+            --text-light: #333;
+            --text-dark: #f0f0f0;
+            --accent: #4e9af1;
+            --danger: #ff4d4d;
+            --success: #2ecc71;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        header {
+            background: var(--primary);
+            padding: 20px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--secondary);
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .theme-toggle {
+            background: var(--secondary);
+            color: var(--primary);
+            border: none;
+            border-radius: 30px;
+            padding: 8px 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-bar {
+            flex: 1;
+            min-width: 300px;
+            background: var(--dark-card);
+            border-radius: 30px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-dark);
+            font-family: 'Poppins', sans-serif;
+            padding: 8px;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--dark-card);
+            color: var(--text-dark);
+            border: none;
+            border-radius: 30px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .filter-btn.active {
+            background: var(--secondary);
+            color: var(--primary);
+        }
+
+        .add-btn {
+            background: var(--secondary);
+            color: var(--primary);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add-btn:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .assignments-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .assignment-card {
+            background: var(--dark-card);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            border-left: 5px solid var(--secondary);
+        }
+
+        .assignment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(255, 204, 0, 0.2);
+        }
+
+        .assignment-card.urgent {
+            border-left-color: var(--danger);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 77, 77, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); }
+        }
+
+        .assignment-card.completed {
+            border-left-color: var(--success);
+            opacity: 0.8;
+        }
+
+        .assignment-card h3 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .assignment-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .assignment-desc {
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .progress-container {
+            height: 8px;
+            background: #333;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            width: 0%;
+        }
+
+        .assignment-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: rgba(255, 204, 0, 0.2);
+            color: var(--secondary);
+        }
+
+        .status-completed {
+            background: rgba(46, 204, 113, 0.2);
+            color: var(--success);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            cursor: pointer;
+            font-size: 1.1rem;
+            opacity: 0.7;
+        }
+
+        .action-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .edit-btn {
+            color: var(--accent);
+        }
+
+        .delete-btn {
+            color: var(--danger);
+        }
+
+        .complete-btn {
+            color: var(--success);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--dark-card);
+            border-radius: 15px;
+            padding: 30px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close-modal:hover {
+            color: var(--danger);
+        }
+
+        .modal h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background: #333;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: var(--text-dark);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(78, 154, 241, 0.2);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--secondary);
+            color: var(--primary);
+        }
+
+        .btn-secondary {
+            background: #333;
+            color: var(--text-dark);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        /* Light mode styles */
+        body.light-mode {
+            background: var(--light-bg);
+            color: var(--text-light);
+        }
+
+        body.light-mode .search-bar,
+        body.light-mode .filter-btn,
+        body.light-mode .assignment-card {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .search-bar input,
+        body.light-mode .form-control {
+            background: #f5f5f5;
+            color: var(--text-light);
+        }
+
+        body.light-mode .assignment-card h3 {
+            color: var(--primary);
+        }
+
+        body.light-mode .assignment-meta {
+            color: #666;
+        }
+
+        body.light-mode .modal-content {
+            background: var(--light-card);
+        }
+
+        body.light-mode .form-group label {
+            color: var(--primary);
+        }
+
+        body.light-mode .empty-state h3 {
+            color: var(--text-light);
+        }
+
+        body.light-mode .empty-state p {
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+
+            .search-bar {
+                min-width: 100%;
+            }
+
+            .assignments-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <i class="fas fa-tasks"></i>
+            <h1>Assignments Manager</h1>
+        </div>
+        <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-sun"></i>
+            <span>Light Mode</span>
+        </button>
+    </header>
+
+    <div class="container">
+        <div class="controls">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search assignments...">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">
+                    <i class="fas fa-layer-group"></i>
+                    <span>All</span>
+                </button>
+                <button class="filter-btn" data-filter="pending">
+                    <i class="fas fa-clock"></i>
+                    <span>Pending</span>
+                </button>
+                <button class="filter-btn" data-filter="completed">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Completed</span>
+                </button>
+                <button class="filter-btn" data-filter="urgent">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Urgent</span>
+                </button>
+            </div>
+            <button class="add-btn" id="addAssignmentBtn">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <div class="assignments-container" id="assignmentsContainer">
+            <!-- Assignments will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Add/Edit Assignment Modal -->
+    <div class="modal" id="assignmentModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 id="modalTitle">Add New Assignment</h2>
+            <form id="assignmentForm">
+                <input type="hidden" id="assignmentId">
+                <div class="form-group">
+                    <label for="assignmentTitle">Title</label>
+                    <input type="text" id="assignmentTitle" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentCourse">Course</label>
+                    <input type="text" id="assignmentCourse" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentDueDate">Due Date</label>
+                    <input type="datetime-local" id="assignmentDueDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentPriority">Priority</label>
+                    <select id="assignmentPriority" class="form-control" required>
+                        <option value="normal">Normal</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentDescription">Description</label>
+                    <textarea id="assignmentDescription" class="form-control" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentProgress">Progress (%)</label>
+                    <input type="range" id="assignmentProgress" class="form-control" min="0" max="100" value="0">
+                    <div class="progress-value" id="progressValue">0%</div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Assignment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sample initial data
+        let assignments = [
+            {
+                id: 1,
+                title: "Data Structures - Linked List Implementation",
+                course: "Computer Science",
+                dueDate: "2025-04-10T23:59",
+                priority: "high",
+                description: "Implement a singly linked list with insert, delete, and search operations. Write test cases to verify functionality.",
+                progress: 35,
+                status: "pending",
+                createdAt: new Date()
+            },
+            {
+                id: 2,
+                title: "Database Management - SQL Queries",
+                course: "Database Systems",
+                dueDate: "2025-04-12T23:59",
+                priority: "normal",
+                description: "Write complex SQL queries for the provided database schema including joins, subqueries and aggregations.",
+                progress: 70,
+                status: "pending",
+                createdAt: new Date()
+            },
+            {
+                id: 3,
+                title: "Machine Learning Paper Review",
+                course: "AI Fundamentals",
+                dueDate: "2025-04-05T23:59",
+                priority: "urgent",
+                description: "Read and summarize the key findings of the research paper 'Attention Is All You Need'.",
+                progress: 10,
+                status: "pending",
+                createdAt: new Date()
+            },
+            {
+                id: 4,
+                title: "Calculus Problem Set",
+                course: "Mathematics",
+                dueDate: "2025-04-15T23:59",
+                priority: "normal",
+                description: "Complete problems on differential equations from chapter 8 of the textbook.",
+                progress: 100,
+                status: "completed",
+                createdAt: new Date()
+            }
+        ];
+
+        // DOM elements
+        const assignmentsContainer = document.getElementById('assignmentsContainer');
+        const assignmentModal = document.getElementById('assignmentModal');
+        const addAssignmentBtn = document.getElementById('addAssignmentBtn');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const assignmentForm = document.getElementById('assignmentForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const searchInput = document.getElementById('searchInput');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const themeToggle = document.getElementById('themeToggle');
+        const progressSlider = document.getElementById('assignmentProgress');
+        const progressValue = document.getElementById('progressValue');
+
+        // Current filter
+        let currentFilter = 'all';
+        let currentSearch = '';
+        let isEditing = false;
+        let currentEditId = null;
+
+        // Initialize the app
+        function init() {
+            renderAssignments();
+            setupEventListeners();
+            loadThemePreference();
+        }
+
+        // Render assignments to the DOM
+        function renderAssignments() {
+            assignmentsContainer.innerHTML = '';
+
+            const filteredAssignments = filterAssignments();
+
+            if (filteredAssignments.length === 0) {
+                showEmptyState();
+                return;
+            }
+
+            filteredAssignments.forEach(assignment => {
+                const assignmentCard = createAssignmentCard(assignment);
+                assignmentsContainer.appendChild(assignmentCard);
+            });
+        }
+
+        // Create an assignment card element
+        function createAssignmentCard(assignment) {
+            const dueDate = new Date(assignment.dueDate);
+            const now = new Date();
+            const timeDiff = dueDate - now;
+            const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            
+            const card = document.createElement('div');
+            card.className = `assignment-card ${assignment.priority === 'urgent' ? 'urgent' : ''} ${assignment.status === 'completed' ? 'completed' : ''}`;
+            card.dataset.id = assignment.id;
+
+            let priorityBadge = '';
+            if (assignment.priority === 'high') {
+                priorityBadge = '<span class="status-badge status-pending"><i class="fas fa-exclamation"></i> High Priority</span>';
+            } else if (assignment.priority === 'urgent') {
+                priorityBadge = '<span class="status-badge status-pending"><i class="fas fa-fire"></i> Urgent</span>';
+            }
+
+            const statusBadge = assignment.status === 'completed' 
+                ? '<span class="status-badge status-completed"><i class="fas fa-check"></i> Completed</span>'
+                : `<span class="status-badge status-pending"><i class="fas fa-clock"></i> ${daysLeft}d left</span>`;
+
+            card.innerHTML = `
+                <h3>${assignment.title}</h3>
+                <div class="assignment-meta">
+                    <span><i class="fas fa-book"></i> ${assignment.course}</span>
+                    <span><i class="fas fa-calendar-alt"></i> ${formatDate(assignment.dueDate)}</span>
+                </div>
+                ${assignment.description ? `<div class="assignment-desc">${assignment.description}</div>` : ''}
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: ${assignment.progress}%"></div>
+                </div>
+                <div class="assignment-actions">
+                    ${statusBadge}
+                    ${priorityBadge}
+                    <div class="action-buttons">
+                        <button class="action-btn complete-btn" data-id="${assignment.id}">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="action-btn edit-btn" data-id="${assignment.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" data-id="${assignment.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Show empty state
+        function showEmptyState() {
+            const emptyState = document.createElement('div');
+            emptyState.className = 'empty-state';
+            emptyState.innerHTML = `
+                <i class="fas fa-tasks"></i>
+                <h3>No Assignments Found</h3>
+                <p>${currentFilter === 'completed' ? 'You have no completed assignments yet.' : 
+                  currentFilter === 'pending' ? 'All caught up! No pending assignments.' : 
+                  'Create your first assignment to get started!'}</p>
+                <button class="btn btn-primary" id="addFirstAssignment">Add Assignment</button>
+            `;
+            assignmentsContainer.appendChild(emptyState);
+
+            document.getElementById('addFirstAssignment')?.addEventListener('click', () => {
+                openAddModal();
+            });
+        }
+
+        // Filter assignments based on current filter and search
+        function filterAssignments() {
+            return assignments.filter(assignment => {
+                // Apply search filter
+                const matchesSearch = assignment.title.toLowerCase().includes(currentSearch.toLowerCase()) || 
+                                     assignment.course.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                                     assignment.description?.toLowerCase().includes(currentSearch.toLowerCase());
+                
+                // Apply status filter
+                let matchesFilter = true;
+                if (currentFilter === 'pending') {
+                    matchesFilter = assignment.status !== 'completed';
+                } else if (currentFilter === 'completed') {
+                    matchesFilter = assignment.status === 'completed';
+                } else if (currentFilter === 'urgent') {
+                    matchesFilter = assignment.priority === 'urgent' && assignment.status !== 'completed';
+                }
+                
+                return matchesSearch && matchesFilter;
+            }).sort((a, b) => {
+                // Sort by due date (earliest first)
+                return new Date(a.dueDate) - new Date(b.dueDate);
+            });
+        }
+
+        // Format date for display
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        // Open modal for adding new assignment
+        function openAddModal() {
+            isEditing = false;
+            currentEditId = null;
+            modalTitle.textContent = 'Add New Assignment';
+            assignmentForm.reset();
+            document.getElementById('assignmentProgress').value = 0;
+            progressValue.textContent = '0%';
+            assignmentModal.style.display = 'flex';
+        }
+
+        // Open modal for editing assignment
+        function openEditModal(id) {
+            const assignment = assignments.find(a => a.id === id);
+            if (!assignment) return;
+
+            isEditing = true;
+            currentEditId = id;
+            modalTitle.textContent = 'Edit Assignment';
+            
+            document.getElementById('assignmentId').value = assignment.id;
+            document.getElementById('assignmentTitle').value = assignment.title;
+            document.getElementById('assignmentCourse').value = assignment.course;
+            
+            // Format the date for datetime-local input
+            const dueDate = new Date(assignment.dueDate);
+            const formattedDate = dueDate.toISOString().slice(0, 16);
+            document.getElementById('assignmentDueDate').value = formattedDate;
+            
+            document.getElementById('assignmentPriority').value = assignment.priority;
+            document.getElementById('assignmentDescription').value = assignment.description || '';
+            document.getElementById('assignmentProgress').value = assignment.progress;
+            progressValue.textContent = `${assignment.progress}%`;
+            
+            assignmentModal.style.display = 'flex';
+        }
+
+        // Handle form submission
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('assignmentTitle').value;
+            const course = document.getElementById('assignmentCourse').value;
+            const dueDate = document.getElementById('assignmentDueDate').value;
+            const priority = document.getElementById('assignmentPriority').value;
+            const description = document.getElementById('assignmentDescription').value;
+            const progress = parseInt(document.getElementById('assignmentProgress').value);
+            
+            const assignmentData = {
+                title,
+                course,
+                dueDate,
+                priority,
+                description,
+                progress,
+                status: progress === 100 ? 'completed' : 'pending',
+                createdAt: new Date()
+            };
+            
+            if (isEditing) {
+                // Update existing assignment
+                const index = assignments.findIndex(a => a.id === currentEditId);
+                if (index !== -1) {
+                    assignmentData.id = currentEditId;
+                    assignmentData.createdAt = assignments[index].createdAt;
+                    assignments[index] = assignmentData;
+                }
+            } else {
+                // Add new assignment
+                assignmentData.id = Date.now();
+                assignments.unshift(assignmentData);
+            }
+            
+            renderAssignments();
+            assignmentModal.style.display = 'none';
+        }
+
+        // Mark assignment as completed
+        function completeAssignment(id) {
+            const assignment = assignments.find(a => a.id === id);
+            if (assignment) {
+                assignment.progress = 100;
+                assignment.status = 'completed';
+                renderAssignments();
+            }
+        }
+
+        // Delete assignment
+        function deleteAssignment(id) {
+            if (confirm('Are you sure you want to delete this assignment?')) {
+                assignments = assignments.filter(a => a.id !== id);
+                renderAssignments();
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Add assignment button
+            addAssignmentBtn.addEventListener('click', openAddModal);
+            
+            // Close modal buttons
+            closeModal.addEventListener('click', () => {
+                assignmentModal.style.display = 'none';
+            });
+            
+            cancelBtn.addEventListener('click', () => {
+                assignmentModal.style.display = 'none';
+            });
+            
+            // Click outside modal to close
+            window.addEventListener('click', (e) => {
+                if (e.target === assignmentModal) {
+                    assignmentModal.style.display = 'none';
+                }
+            });
+            
+            // Form submission
+            assignmentForm.addEventListener('submit', handleFormSubmit);
+            
+            // Search input
+            searchInput.addEventListener('input', (e) => {
+                currentSearch = e.target.value;
+                renderAssignments();
+            });
+            
+            // Filter buttons
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    currentFilter = button.dataset.filter;
+                    renderAssignments();
+                });
+            });
+            
+            // Progress slider
+            progressSlider.addEventListener('input', (e) => {
+                progressValue.textContent = `${e.target.value}%`;
+            });
+            
+            // Theme toggle
+            themeToggle.addEventListener('click', toggleTheme);
+        }
+
+        // Toggle between dark and light theme
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLightMode = document.body.classList.contains('light-mode');
+            
+            if (isLightMode) {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i><span>Dark Mode</span>';
+                localStorage.setItem('theme', 'light');
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i><span>Light Mode</span>';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load theme preference from localStorage
+        function loadThemePreference() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i><span>Dark Mode</span>';
+            }
+        }
+
+        // Event delegation for dynamic elements
+        document.addEventListener('click', (e) => {
+            // Edit button
+            if (e.target.closest('.edit-btn')) {
+                const id = parseInt(e.target.closest('.edit-btn').dataset.id);
+                openEditModal(id);
+            }
+            
+            // Delete button
+            else if (e.target.closest('.delete-btn')) {
+                const id = parseInt(e.target.closest('.delete-btn').dataset.id);
+                deleteAssignment(id);
+            }
+            
+            // Complete button
+            else if (e.target.closest('.complete-btn')) {
+                const id = parseInt(e.target.closest('.complete-btn').dataset.id);
+                completeAssignment(id);
+            }
+        });
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

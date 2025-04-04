@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements - ShikshaSetu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #112762;
+            --secondary: #ffcc00;
+            --danger: #ff4d4d;
+            --success: #4CAF50;
+            --info: #2196F3;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --text-dark: #333;
+            --text-light: #f1f1f1;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--text-dark);
+            transition: var(--transition);
+        }
+
+        body.dark-mode {
+            background-color: var(--dark);
+            color: var(--text-light);
+        }
+
+        /* Header */
+        header {
+            background: var(--primary);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        header h1 {
+            color: var(--secondary);
+            font-size: 2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Controls Bar */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        body.dark-mode .controls {
+            background: rgba(26, 26, 46, 0.9);
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            border: 2px solid #ddd;
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        body.dark-mode .search-box input {
+            background: #333;
+            color: white;
+            border-color: #555;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 20px;
+            background: #f0f0f0;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        body.dark-mode .filter-btn {
+            background: #333;
+            color: white;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .filter-btn.urgent {
+            background: var(--danger);
+            color: white;
+        }
+
+        .filter-btn.important {
+            background: var(--secondary);
+            color: var(--text-dark);
+        }
+
+        .filter-btn.general {
+            background: var(--info);
+            color: white;
+        }
+
+        .mode-toggle {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--text-dark);
+            transition: var(--transition);
+        }
+
+        body.dark-mode .mode-toggle {
+            color: var(--text-light);
+        }
+
+        /* Announcements Container */
+        .announcements-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .announcement {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-mode .announcement {
+            background: #2a2a3a;
+        }
+
+        .announcement:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .announcement.priority-urgent {
+            border-left: 5px solid var(--danger);
+        }
+
+        .announcement.priority-important {
+            border-left: 5px solid var(--secondary);
+        }
+
+        .announcement.priority-general {
+            border-left: 5px solid var(--info);
+        }
+
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .announcement h3 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        body.dark-mode .announcement h3 {
+            color: var(--secondary);
+        }
+
+        .announcement .date {
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        body.dark-mode .announcement .date {
+            color: #aaa;
+        }
+
+        .announcement p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .announcement-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        body.dark-mode .announcement-footer {
+            border-top-color: #444;
+        }
+
+        .announcement-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #777;
+            font-size: 1rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        body.dark-mode .action-btn {
+            color: #aaa;
+        }
+
+        .action-btn:hover {
+            color: var(--primary);
+        }
+
+        body.dark-mode .action-btn:hover {
+            color: var(--secondary);
+        }
+
+        .action-btn.liked {
+            color: var(--danger);
+        }
+
+        .action-btn.bookmarked {
+            color: var(--secondary);
+        }
+
+        .priority-tag {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-urgent .priority-tag {
+            background: rgba(255, 77, 77, 0.2);
+            color: var(--danger);
+        }
+
+        .priority-important .priority-tag {
+            background: rgba(255, 204, 0, 0.2);
+            color: var(--secondary);
+        }
+
+        .priority-general .priority-tag {
+            background: rgba(33, 150, 243, 0.2);
+            color: var(--info);
+        }
+
+        /* New Announcement Form (Admin Only) */
+        .new-announcement-form {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        body.dark-mode .new-announcement-form {
+            background: #2a2a3a;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+        }
+
+        body.dark-mode .form-group input,
+        body.dark-mode .form-group textarea,
+        body.dark-mode .form-group select {
+            background: #333;
+            color: white;
+            border-color: #555;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .submit-btn:hover {
+            background: #0a1a4a;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .filter-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .announcement-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .announcement-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .announcement-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><i class="fas fa-bullhorn"></i> Announcements</h1>
+    </header>
+
+    <div class="controls">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search announcements...">
+        </div>
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn urgent" data-filter="urgent">Urgent</button>
+            <button class="filter-btn important" data-filter="important">Important</button>
+            <button class="filter-btn general" data-filter="general">General</button>
+        </div>
+        <button class="mode-toggle" id="modeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <div class="announcements-container" id="announcementsContainer">
+        <!-- Announcements will be loaded here dynamically -->
+    </div>
+
+    <!-- Floating Action Button (For Admin) -->
+    <div class="fab" id="fabButton">
+        <i class="fas fa-plus"></i>
+    </div>
+
+    <!-- New Announcement Modal (Hidden by Default) -->
+    <div class="new-announcement-form" id="newAnnouncementForm" style="display: none;">
+        <h2>Create New Announcement</h2>
+        <form id="announcementForm">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="priority">Priority</label>
+                <select id="priority" required>
+                    <option value="general">General</option>
+                    <option value="important">Important</option>
+                    <option value="urgent">Urgent</option>
+                </select>
+            </div>
+            <button type="submit" class="submit-btn">Post Announcement</button>
+        </form>
+    </div>
+
+    <script>
+        // Sample Announcement Data (Replace with API calls in production)
+        let announcements = [
+            {
+                id: 1,
+                title: "Exam Timetable Released",
+                message: "The final exam schedule has been uploaded to the portal. Check your student dashboard for details.",
+                date: "2025-06-15",
+                priority: "urgent",
+                likes: 24,
+                isLiked: false,
+                isBookmarked: false,
+                comments: 5
+            },
+            {
+                id: 2,
+                title: "Assignment Submission Extended",
+                message: "The deadline for submitting assignments has been extended by 3 days due to technical issues.",
+                date: "2025-06-14",
+                priority: "important",
+                likes: 12,
+                isLiked: true,
+                isBookmarked: false,
+                comments: 3
+            },
+            {
+                id: 3,
+                title: "New Course Materials Available",
+                message: "Additional learning resources for Advanced Mathematics have been added to the course page.",
+                date: "2025-06-12",
+                priority: "general",
+                likes: 8,
+                isLiked: false,
+                isBookmarked: true,
+                comments: 2
+            },
+            {
+                id: 4,
+                title: "Campus Maintenance Notice",
+                message: "There will be scheduled maintenance this weekend. The portal may be temporarily unavailable.",
+                date: "2025-06-10",
+                priority: "important",
+                likes: 15,
+                isLiked: false,
+                isBookmarked: false,
+                comments: 7
+            },
+            {
+                id: 5,
+                title: "Guest Lecture Announcement",
+                message: "Dr. Smith will be delivering a special lecture on AI Ethics next Wednesday at 2 PM.",
+                date: "2025-06-08",
+                priority: "general",
+                likes: 30,
+                isLiked: true,
+                isBookmarked: true,
+                comments: 10
+            }
+        ];
+
+        // DOM Elements
+        const announcementsContainer = document.getElementById('announcementsContainer');
+        const searchInput = document.getElementById('searchInput');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const modeToggle = document.getElementById('modeToggle');
+        const fabButton = document.getElementById('fabButton');
+        const newAnnouncementForm = document.getElementById('newAnnouncementForm');
+        const announcementForm = document.getElementById('announcementForm');
+
+        // Dark Mode Toggle
+        modeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = modeToggle.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+            modeToggle.querySelector('i').classList.remove('fa-moon');
+            modeToggle.querySelector('i').classList.add('fa-sun');
+        }
+
+        // Render Announcements
+        function renderAnnouncements(announcementsToRender) {
+            announcementsContainer.innerHTML = '';
+            if (announcementsToRender.length === 0) {
+                announcementsContainer.innerHTML = '<p style="text-align: center; color: #777;">No announcements found.</p>';
+                return;
+            }
+            announcementsToRender.forEach(announcement => {
+                const announcementEl = document.createElement('div');
+                announcementEl.className = `announcement priority-${announcement.priority}`;
+                announcementEl.innerHTML = `
+                    <div class="announcement-header">
+                        <h3>${announcement.title}</h3>
+                        <span class="date">${formatDate(announcement.date)}</span>
+                    </div>
+                    <p>${announcement.message}</p>
+                    <div class="announcement-footer">
+                        <span class="priority-tag">${announcement.priority}</span>
+                        <div class="announcement-actions">
+                            <button class="action-btn like-btn ${announcement.isLiked ? 'liked' : ''}" data-id="${announcement.id}">
+                                <i class="fas fa-heart"></i> <span>${announcement.likes}</span>
+                            </button>
+                            <button class="action-btn comment-btn" data-id="${announcement.id}">
+                                <i class="fas fa-comment"></i> <span>${announcement.comments}</span>
+                            </button>
+                            <button class="action-btn bookmark-btn ${announcement.isBookmarked ? 'bookmarked' : ''}" data-id="${announcement.id}">
+                                <i class="fas fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                announcementsContainer.appendChild(announcementEl);
+            });
+
+            // Add event listeners to action buttons
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.addEventListener('click', toggleLike);
+            });
+            document.querySelectorAll('.bookmark-btn').forEach(btn => {
+                btn.addEventListener('click', toggleBookmark);
+            });
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        // Filter announcements
+        function filterAnnouncements(filter) {
+            let filtered = [...announcements];
+            if (filter !== 'all') {
+                filtered = filtered.filter(announcement => announcement.priority === filter);
+            }
+            return filtered;
+        }
+
+        // Search announcements
+        function searchAnnouncements(query) {
+            query = query.toLowerCase();
+            return announcements.filter(announcement => 
+                announcement.title.toLowerCase().includes(query) || 
+                announcement.message.toLowerCase().includes(query)
+            );
+        }
+
+        // Toggle like
+        function toggleLike(e) {
+            const id = parseInt(e.currentTarget.getAttribute('data-id'));
+            const announcement = announcements.find(a => a.id === id);
+            if (announcement.isLiked) {
+                announcement.likes--;
+            } else {
+                announcement.likes++;
+            }
+            announcement.isLiked = !announcement.isLiked;
+            renderAnnouncements(announcements);
+        }
+
+        // Toggle bookmark
+        function toggleBookmark(e) {
+            const id = parseInt(e.currentTarget.getAttribute('data-id'));
+            const announcement = announcements.find(a => a.id === id);
+            announcement.isBookmarked = !announcement.isBookmarked;
+            renderAnnouncements(announcements);
+        }
+
+        // Show/hide new announcement form
+        fabButton.addEventListener('click', () => {
+            newAnnouncementForm.style.display = newAnnouncementForm.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Handle form submission
+        announcementForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('title').value;
+            const message = document.getElementById('message').value;
+            const priority = document.getElementById('priority').value;
+            
+            const newAnnouncement = {
+                id: announcements.length + 1,
+                title,
+                message,
+                date: new Date().toISOString().split('T')[0],
+                priority,
+                likes: 0,
+                isLiked: false,
+                isBookmarked: false,
+                comments: 0
+            };
+            
+            announcements.unshift(newAnnouncement);
+            renderAnnouncements(announcements);
+            
+            // Reset form
+            announcementForm.reset();
+            newAnnouncementForm.style.display = 'none';
+            
+            // Show success message
+            alert('Announcement posted successfully!');
+        });
+
+        // Filter button click handler
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                const filter = button.getAttribute('data-filter');
+                const filtered = filterAnnouncements(filter);
+                renderAnnouncements(filtered);
+            });
+        });
+
+        // Search input handler
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.trim();
+            if (query === '') {
+                const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+                const filtered = filterAnnouncements(activeFilter);
+                renderAnnouncements(filtered);
+            } else {
+                const searched = searchAnnouncements(query);
+                renderAnnouncements(searched);
+            }
+        });
+
+        // Initial render
+        renderAnnouncements(announcements);
+
+        // Simulate real-time updates (in a real app, use WebSocket)
+        setInterval(() => {
+            // This is just for demo - in a real app, you'd get updates from a server
+            if (Math.random() > 0.9) {
+                const randomAnnouncements = [
+                    "New scholarship opportunities available!",
+                    "System maintenance scheduled for tonight",
+                    "Workshop on resume building tomorrow",
+                    "Last chance to submit course feedback"
+                ];
+                const newAnnouncement = {
+                    id: announcements.length + 1,
+                    title: randomAnnouncements[Math.floor(Math.random() * randomAnnouncements.length)],
+                    message: "This is an automatically generated announcement to demonstrate real-time updates.",
+                    date: new Date().toISOString().split('T')[0],
+                    priority: ["general", "important", "urgent"][Math.floor(Math.random() * 3)],
+                    likes: 0,
+                    isLiked: false,
+                    isBookmarked: false,
+                    comments: 0
+                };
+                announcements.unshift(newAnnouncement);
+                renderAnnouncements(announcements);
+                
+                // Show notification
+                if (Notification.permission === 'granted') {
+                    new Notification('New Announcement', {
+                        body: newAnnouncement.title
+                    });
+                }
+            }
+        }, 30000); // Check every 30 seconds
+
+        // Request notification permission
+        if (Notification.permission !== 'denied') {
+            Notification.requestPermission();
+        }
+    </script>
+</body>
+</html>
