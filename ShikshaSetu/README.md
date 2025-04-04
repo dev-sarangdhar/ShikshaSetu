@@ -5,6 +5,7 @@ ShikshaSetu is a next-generation learning platform designed to bridge the gap be
 ## Features
 
 ### Frontend
+
 - **Student Dashboard**: View assignments, grades, and course progress.
 - **Faculty Dashboard**: Manage courses, assignments, and generate analytics.
 - **Admin Dashboard**: Oversee platform activities, manage users, and generate reports.
@@ -15,6 +16,7 @@ ShikshaSetu is a next-generation learning platform designed to bridge the gap be
 - **Responsive Design**: Fully responsive UI for desktop and mobile devices.
 
 ### Backend
+
 - **Authentication**: Secure login and role-based access control for Admin, Faculty, and Students.
 - **Database Management**: MongoDB integration for storing courses, assignments, and user data.
 - **RESTful APIs**: APIs for managing assignments, courses, and announcements.
@@ -23,52 +25,60 @@ ShikshaSetu is a next-generation learning platform designed to bridge the gap be
 ## Installation
 
 ### Prerequisites
+
 - Node.js (v16 or higher)
 - MongoDB
 - npm or yarn
 
 ### Steps
+
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/your-repo/shikshasetu.git
    cd shikshasetu
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Start the server:
+
    ```bash
    npm start
    ```
+
    npm run dev
 
 4. Access the application at `http://localhost:3000`.
 
 ### Folder Struture
+
 ShikshaSetu/
 ├── backend/
-│   ├── models/
-│   ├── routes/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── [server.js](http://_vscodecontentref_/0)
-│   └── .env
+│ ├── models/
+│ ├── routes/
+│ ├── controllers/
+│ ├── middleware/
+│ ├── [server.js](http://_vscodecontentref_/0)
+│ └── .env
 ├── frontend/
-│   ├── assets/
-│   ├── [index.html](http://_vscodecontentref_/1)
-│   ├── [student-dashboard.html](http://_vscodecontentref_/2)
-│   ├── [faculty-dashboard.html](http://_vscodecontentref_/3)
-│   ├── [admin-dashboard.html](http://_vscodecontentref_/4)
-│   ├── [assignments.html](http://_vscodecontentref_/5)
-│   ├── [grades.html](http://_vscodecontentref_/6)
-│   ├── [ai-assistant.html](http://_vscodecontentref_/7)
-│   └── [core-management.html](http://_vscodecontentref_/8)
+│ ├── assets/
+│ ├── [index.html](http://_vscodecontentref_/1)
+│ ├── [student-dashboard.html](http://_vscodecontentref_/2)
+│ ├── [faculty-dashboard.html](http://_vscodecontentref_/3)
+│ ├── [admin-dashboard.html](http://_vscodecontentref_/4)
+│ ├── [assignments.html](http://_vscodecontentref_/5)
+│ ├── [grades.html](http://_vscodecontentref_/6)
+│ ├── [ai-assistant.html](http://_vscodecontentref_/7)
+│ └── [core-management.html](http://_vscodecontentref_/8)
 └── README.md
 
 ## Future Plans
+
 Mobile App: Develop a mobile application for Android and iOS.
 Real-Time Collaboration: Add real-time document editing and group project tools.
 Gamification: Introduce badges, leaderboards, and rewards to enhance engagement.
@@ -77,7 +87,6 @@ Integration with LMS: Integrate with popular Learning Management Systems like Mo
 Blockchain Certificates: Provide blockchain-verified certificates for completed courses.
 Multilingual Support: Add support for multiple languages to cater to a global audience.
 Advanced Analytics: Provide detailed insights into student performance and course effectiveness.
-
 
 ## Contributing
 
