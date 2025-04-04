@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat - ShikshaSetu</title>
+    <style>
+        body {
+            background: #f5f5f5;
+            color: #333;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #112762;
+            padding: 15px 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffcc00;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.2rem;
+        }
+        .user-status {
+            font-size: 0.9rem;
+            background: rgba(255,255,255,0.2);
+            padding: 3px 10px;
+            border-radius: 15px;
+        }
+        .chat-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #112762;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(255, 204, 0, 0.3);
+        }
+        .chat-header {
+            color: #ffcc00;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-messages {
+            height: 500px;
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message {
+            max-width: 75%;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .sent {
+            align-self: flex-end;
+            background: #ffcc00;
+            color: #112762;
+            border-bottom-right-radius: 5px;
+        }
+        .received {
+            align-self: flex-start;
+            background: #e5e5ea;
+            color: #000;
+            border-bottom-left-radius: 5px;
+        }
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+        input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.9);
+        }
+        button {
+            background: #ffcc00;
+            color: #112762;
+            border: none;
+            padding: 0 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        button:hover {
+            background: #ffd633;
+            transform: scale(1.02);
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        .user-info {
+            font-size: 0.75rem;
+            margin-bottom: 3px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+        .sent .user-info {
+            color: #112762;
+        }
+        .received .user-info {
+            color: #555;
+        }
+        .typing-indicator {
+            align-self: flex-start;
+            background: #e5e5ea;
+            color: #555;
+            padding: 8px 15px;
+            border-radius: 18px;
+            margin-bottom: 10px;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+        .typing-dots {
+            display: inline-flex;
+            align-items: center;
+        }
+        .typing-dots span {
+            height: 8px;
+            width: 8px;
+            margin: 0 2px;
+            background-color: #555;
+            border-radius: 50%;
+            display: inline-block;
+            animation: typingAnimation 1.4s infinite both;
+        }
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes typingAnimation {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        .timestamp {
+            opacity: 0.7;
+            font-size: 0.7rem;
+        }
+        .ai-label {
+            background: #112762;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.6rem;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">ShikshaSetu AI</div>
+        <div class="user-status">Student Mode</div>
+    </header>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <div>Classroom Chat Assistant</div>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <!-- Initial AI welcome message -->
+            <div class="message received">
+                <div class="user-info">
+                    <span>ShikshaSetu AI <span class="ai-label">TEACHER ASSISTANT</span></span>
+                    <span class="timestamp">Just now</span>
+                </div>
+                Welcome to ShikshaSetu Classroom Chat! I'm your AI teaching assistant. How can I help you with your studies today?
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="message-input" placeholder="Ask about math, science, assignments..." autocomplete="off">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-button');
+            const chatMessages = document.getElementById('chat-messages');
+            
+            // User profile
+            const currentUser = {
+                id: 'student_user',
+                name: 'You',
+                type: 'student'
+            };
+            
+            // AI personas
+            const aiPersonas = {
+                teacher: {
+                    id: 'ai_teacher',
+                    name: 'ShikshaSetu AI',
+                    type: 'teacher',
+                    style: 'formal',
+                    expertise: ['math', 'science', 'history', 'literature']
+                },
+                tutor: {
+                    id: 'ai_tutor',
+                    name: 'Study Tutor',
+                    type: 'tutor',
+                    style: 'friendly',
+                    expertise: ['homework help', 'study tips', 'exam prep']
+                },
+                peer: {
+                    id: 'ai_peer',
+                    name: 'Classmate',
+                    type: 'student',
+                    style: 'casual',
+                    expertise: ['collaboration', 'group study', 'student perspective']
+                }
+            };
+            
+            // Knowledge base for different subjects
+            const knowledgeBase = {
+                math: {
+                    algebra: [
+                        "Algebra is about finding the unknown values in equations.",
+                        "Remember to perform the same operation on both sides of the equation.",
+                        "The quadratic formula is x = [-b ± √(b²-4ac)]/2a"
+                    ],
+                    geometry: [
+                        "The area of a triangle is 1/2 × base × height.",
+                        "Pythagorean theorem: a² + b² = c² for right triangles.",
+                        "The circumference of a circle is 2πr."
+                    ]
+                },
+                science: {
+                    physics: [
+                        "Newton's First Law: An object in motion stays in motion unless acted upon.",
+                        "Force equals mass times acceleration (F=ma).",
+                        "Energy cannot be created or destroyed, only transformed."
+                    ],
+                    chemistry: [
+                        "The periodic table organizes elements by atomic number.",
+                        "Chemical reactions involve breaking and forming bonds.",
+                        "pH scale measures acidity from 0 (acidic) to 14 (basic)."
+                    ]
+                },
+                general: [
+                    "Make sure to review your notes regularly for better retention.",
+                    "Breaking study sessions into 25-minute chunks can improve focus (Pomodoro technique).",
+                    "Don't hesitate to ask for clarification on concepts you find difficult.",
+                    "Teaching a concept to someone else is a great way to reinforce your own understanding."
+                ]
+            };
+            
+            // Send message function
+            function sendMessage() {
+                const messageText = messageInput.value.trim();
+                if (messageText) {
+                    // Display user message
+                    displayMessage(currentUser.id, messageText, new Date(), currentUser);
+                    messageInput.value = '';
+                    
+                    // Show typing indicator
+                    showTypingIndicator();
+                    
+                    // Process message and generate AI response after a delay
+                    setTimeout(() => {
+                        removeTypingIndicator();
+                        const aiResponse = generateAIResponse(messageText);
+                        displayMessage(aiResponse.sender.id, aiResponse.text, new Date(), aiResponse.sender);
+                    }, 1000 + Math.random() * 2000);
+                }
+            }
+            
+            // Show typing indicator
+            function showTypingIndicator() {
+                const typingElement = document.createElement('div');
+                typingElement.classList.add('typing-indicator');
+                typingElement.id = 'typing-indicator';
+                typingElement.innerHTML = `
+                    <span>${selectRandomAI().name} is typing</span>
+                    <span class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                `;
+                chatMessages.appendChild(typingElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Remove typing indicator
+            function removeTypingIndicator() {
+                const typingElement = document.getElementById('typing-indicator');
+                if (typingElement) {
+                    typingElement.remove();
+                }
+            }
+            
+            // Select appropriate AI persona based on message
+            function selectRandomAI() {
+                // 60% chance for teacher, 30% for tutor, 10% for peer
+                const rand = Math.random();
+                if (rand < 0.6) return aiPersonas.teacher;
+                if (rand < 0.9) return aiPersonas.tutor;
+                return aiPersonas.peer;
+            }
+            
+            // Generate AI response based on user message
+            function generateAIResponse(userMessage) {
+                const aiPersona = selectRandomAI();
+                let responseText = '';
+                
+                // Check for specific subject queries
+                const lowerMessage = userMessage.toLowerCase();
+                
+                if (lowerMessage.includes('math') || lowerMessage.includes('algebra') || lowerMessage.includes('geometry')) {
+                    const mathCategory = lowerMessage.includes('geometry') ? 'geometry' : 'algebra';
+                    responseText = getRandomResponse(knowledgeBase.math[mathCategory]);
+                } 
+                else if (lowerMessage.includes('science') || lowerMessage.includes('physics') || lowerMessage.includes('chemistry')) {
+                    const scienceCategory = lowerMessage.includes('physics') ? 'physics' : 'chemistry';
+                    responseText = getRandomResponse(knowledgeBase.science[scienceCategory]);
+                }
+                else if (lowerMessage.includes('help') || lowerMessage.includes('homework') || lowerMessage.includes('assignment')) {
+                    responseText = getRandomResponse([
+                        "For homework help, try breaking the problem into smaller steps.",
+                        "Make sure you understand the core concepts before attempting the assignment.",
+                        "Have you checked the textbook examples? They often provide good guidance."
+                    ]);
+                }
+                else if (lowerMessage.includes('exam') || lowerMessage.includes('test') || lowerMessage.includes('study')) {
+                    responseText = getRandomResponse([
+                        "Active recall and spaced repetition are effective study techniques.",
+                        "Create a study schedule to cover all topics before the exam.",
+                        "Practice with past exam papers to understand the question patterns."
+                    ]);
+                }
+                else {
+                    // General response
+                    responseText = getRandomResponse(knowledgeBase.general);
+                }
+                
+                // Adjust response style based on AI persona
+                if (aiPersona.style === 'formal') {
+                    responseText = "From an instructional perspective, " + responseText.toLowerCase();
+                }
+                else if (aiPersona.style === 'friendly') {
+                    responseText = "Here's a helpful tip: " + responseText;
+                }
+                else {
+                    responseText = "I think " + responseText.toLowerCase();
+                }
+                
+                // Add persona-specific closing
+                if (aiPersona.type === 'teacher') {
+                    const closings = [
+                        " Let me know if you need further clarification.",
+                        " Does this answer your question?",
+                        " Would you like me to explain any part in more detail?"
+                    ];
+                    responseText += getRandomResponse(closings);
+                }
+                
+                return {
+                    sender: aiPersona,
+                    text: responseText
+                };
+            }
+            
+            // Helper function to get random response from array
+            function getRandomResponse(responses) {
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+            
+            // Display message in chat
+            function displayMessage(senderId, text, timestamp, senderInfo) {
+                const isCurrentUser = senderId === currentUser.id;
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+                messageElement.classList.add(isCurrentUser ? 'sent' : 'received');
+                
+                const timeString = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const aiLabel = senderInfo.type === 'teacher' ? 
+                    '<span class="ai-label">TEACHER ASSISTANT</span>' : 
+                    (senderInfo.type === 'tutor' ? '<span class="ai-label">TUTOR</span>' : '');
+                
+                messageElement.innerHTML = `
+                    <div class="user-info">
+                        <span>${senderInfo.name} ${aiLabel}</span>
+                        <span class="timestamp">${timeString}</span>
+                    </div>
+                    ${text}
+                `;
+                
+                chatMessages.appendChild(messageElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Event listeners
+            sendButton.addEventListener('click', sendMessage);
+            
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Focus input field on load
+            messageInput.focus();
+        });
+    </script>
+</body>
+</html>

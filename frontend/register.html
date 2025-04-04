@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - ShikshaSetu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background: #ffffff;
+            color: #fff;
+            text-align: center;
+            overflow: hidden;
+            height: 100vh;
+        }
+        video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(40%) contrast(120%);
+        }
+        .auth-container {
+            width: 90%;
+            max-width: 450px;
+            margin: 8vh auto;
+            padding: 40px;
+            background: rgba(17, 39, 98, 0.95);
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            box-shadow: 0px 4px 30px rgba(255, 204, 0, 0.5);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .auth-container:hover {
+            box-shadow: 0px 8px 40px rgba(255, 204, 0, 0.7);
+            transform: translateY(-5px);
+        }
+        .auth-container h2 {
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            color: #ffcc00;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .auth-container h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: #ffcc00;
+            border-radius: 3px;
+        }
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .auth-container input {
+            width: 100%;
+            padding: 14px 20px;
+            margin: 5px 0;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .auth-container input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .auth-container input:focus {
+            border-color: #ffcc00;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.2);
+        }
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .password-strength {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            background: #ff3333;
+            transition: all 0.3s ease;
+        }
+        .password-hints {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: left;
+            margin-top: 5px;
+            display: none;
+        }
+        .password-hints ul {
+            padding-left: 20px;
+        }
+        .password-hints li {
+            margin: 3px 0;
+        }
+        .auth-container button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #ffcc00, #ff9900);
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #112762;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .auth-container button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 204, 0, 0.6);
+        }
+        .auth-container button:active {
+            transform: translateY(0);
+        }
+        .auth-container p {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .auth-container a {
+            color: #ffcc00;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .auth-container a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ffcc00;
+            transition: width 0.3s ease;
+        }
+        .auth-container a:hover {
+            color: #ffdd33;
+        }
+        .auth-container a:hover::after {
+            width: 100%;
+        }
+        .social-register {
+            margin: 25px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .social-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .social-btn:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        .google {
+            background: #DB4437;
+        }
+        .facebook {
+            background: #4267B2;
+        }
+        .linkedin {
+            background: #0077B5;
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .divider::before {
+            margin-right: 15px;
+        }
+        .divider::after {
+            margin-left: 15px;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+        .notification i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        .notification.success i {
+            color: #4CAF50;
+        }
+        .notification.error i {
+            color: #F44336;
+        }
+        .notification.warning i {
+            color: #FFC107;
+        }
+        .notification.show {
+            transform: translateX(0);
+        }
+        .terms-check {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+        .terms-check input {
+            width: auto;
+            margin-right: 10px;
+        }
+        .terms-check label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .terms-check a {
+            color: #ffcc00;
+            text-decoration: none;
+        }
+        .language-selector {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+        .language-selector select {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            outline: none;
+            cursor: pointer;
+        }
+        .language-selector select option {
+            background: #112762;
+            color: white;
+        }
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 30px 20px;
+                margin: 5vh auto;
+            }
+            .auth-container h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <video autoplay muted loop id="bgVideo">
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-tree-with-yellow-flowers-1173-large.mp4" type="video/mp4">
+    </video>
+
+    <div class="auth-container">
+        <div class="language-selector">
+            <select id="languageSelect">
+                <option value="en">English</option>
+                <option value="hi">हिंदी</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+            </select>
+        </div>
+        
+        <h2 id="registerTitle">Register on ShikshaSetu</h2>
+        
+        <div class="social-register">
+            <div class="social-btn google" title="Register with Google">
+                <i class="fab fa-google"></i>
+            </div>
+            <div class="social-btn facebook" title="Register with Facebook">
+                <i class="fab fa-facebook-f"></i>
+            </div>
+            <div class="social-btn linkedin" title="Register with LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+            </div>
+        </div>
+        
+        <div class="divider">or register with email</div>
+        
+        <form id="registerForm">
+            <div class="input-group">
+                <input type="text" id="fullName" placeholder="Full Name" required>
+                <i class="fas fa-user input-icon"></i>
+            </div>
+            
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Email Address" required>
+                <i class="fas fa-envelope input-icon"></i>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Create Password" required>
+                <i class="fas fa-lock input-icon" id="togglePassword"></i>
+                <div class="password-strength">
+                    <div class="strength-bar" id="strengthBar"></div>
+                </div>
+                <div class="password-hints" id="passwordHints">
+                    <ul>
+                        <li id="lengthHint">At least 8 characters</li>
+                        <li id="uppercaseHint">One uppercase letter</li>
+                        <li id="numberHint">One number</li>
+                        <li id="specialHint">One special character</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                <i class="fas fa-lock input-icon"></i>
+            </div>
+            
+            <div class="terms-check">
+                <input type="checkbox" id="termsAgree" required>
+                <label for="termsAgree">I agree to the <a href="#" id="termsLink">Terms of Service</a> and <a href="#" id="privacyLink">Privacy Policy</a></label>
+            </div>
+            
+            <button type="submit" id="registerButton">Create Account</button>
+        </form>
+        
+        <p id="loginPrompt">Already have an account? <a href="login.html" id="loginLink">Login</a></p>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        // Initialize elements
+        const registerForm = document.getElementById('registerForm');
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const strengthBar = document.getElementById('strengthBar');
+        const passwordHints = document.getElementById('passwordHints');
+        const termsLink = document.getElementById('termsLink');
+        const privacyLink = document.getElementById('privacyLink');
+        const notification = document.getElementById('notification');
+        const languageSelect = document.getElementById('languageSelect');
+
+        // Password visibility toggle
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // Password strength checker
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            
+            // Length check
+            if (password.length >= 8) strength += 25;
+            document.getElementById('lengthHint').style.color = password.length >= 8 ? '#4CAF50' : '';
+            
+            // Uppercase check
+            if (/[A-Z]/.test(password)) strength += 25;
+            document.getElementById('uppercaseHint').style.color = /[A-Z]/.test(password) ? '#4CAF50' : '';
+            
+            // Number check
+            if (/[0-9]/.test(password)) strength += 25;
+            document.getElementById('numberHint').style.color = /[0-9]/.test(password) ? '#4CAF50' : '';
+            
+            // Special char check
+            if (/[^A-Za-z0-9]/.test(password)) strength += 25;
+            document.getElementById('specialHint').style.color = /[^A-Za-z0-9]/.test(password) ? '#4CAF50' : '';
+            
+            // Update strength bar
+            strengthBar.style.width = strength + '%';
+            
+            // Update color based on strength
+            if (strength < 50) {
+                strengthBar.style.background = '#ff3333';
+            } else if (strength < 75) {
+                strengthBar.style.background = '#ffcc00';
+            } else {
+                strengthBar.style.background = '#4CAF50';
+            }
+            
+            // Show/hide hints
+            if (password.length > 0) {
+                passwordHints.style.display = 'block';
+            } else {
+                passwordHints.style.display = 'none';
+            }
+        });
+
+        // Show notification
+        function showNotification(message, type = 'success', duration = 3000) {
+            const icon = type === 'success' ? 'fa-check-circle' : 
+                        type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+            
+            notification.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, duration);
+        }
+
+        // Terms and privacy modal
+        [termsLink, privacyLink].forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const isTerms = this.id === 'termsLink';
+                const title = isTerms ? 'Terms of Service' : 'Privacy Policy';
+                const content = isTerms ? 
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit...' : 
+                    'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...';
+                
+                showNotification(`${title} would open in a modal`, 'warning');
+            });
+        });
+
+        // Ripple effect for buttons
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName.toLowerCase() === 'button' || 
+                e.target.classList.contains('social-btn')) {
+                const btn = e.target.tagName.toLowerCase() === 'button' ? 
+                    e.target : e.target.closest('.social-btn');
+                
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                
+                btn.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            }
+        });
+
+        // Social registration handlers
+        document.querySelectorAll('.social-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const provider = this.classList.contains('google') ? 'Google' : 
+                               this.classList.contains('facebook') ? 'Facebook' : 'LinkedIn';
+                
+                showNotification(`Redirecting to ${provider} for registration...`, 'warning');
+                
+                // Simulate social registration
+                setTimeout(() => {
+                    showNotification(`${provider} registration successful!`, 'success', 2000);
+                }, 1500);
+            });
+        });
+
+        // Language selector functionality
+        languageSelect.addEventListener('change', function() {
+            const lang = this.value;
+            // In a real app, you would load translations here
+            const translations = {
+                'en': {
+                    title: 'Register on ShikshaSetu',
+                    name: 'Full Name',
+                    email: 'Email Address',
+                    createPass: 'Create Password',
+                    confirmPass: 'Confirm Password',
+                    button: 'Create Account',
+                    loginPrompt: 'Already have an account?',
+                    loginLink: 'Login',
+                    or: 'or register with email',
+                    terms: 'I agree to the',
+                    termsLink: 'Terms of Service',
+                    and: 'and',
+                    privacyLink: 'Privacy Policy'
+                },
+                'hi': {
+                    title: 'शिक्षासेतु पर रजिस्टर करें',
+                    name: 'पूरा नाम',
+                    email: 'ईमेल पता',
+                    createPass: 'पासवर्ड बनाएं',
+                    confirmPass: 'पासवर्ड की पुष्टि करें',
+                    button: 'खाता बनाएं',
+                    loginPrompt: 'पहले से ही एक खाता है?',
+                    loginLink: 'लॉगिन',
+                    or: 'या ईमेल से रजिस्टर करें',
+                    terms: 'मैं सहमत हूँ',
+                    termsLink: 'सेवा की शर्तें',
+                    and: 'और',
+                    privacyLink: 'गोपनीयता नीति'
+                },
+                'es': {
+                    title: 'Registrarse en ShikshaSetu',
+                    name: 'Nombre completo',
+                    email: 'Correo electrónico',
+                    createPass: 'Crear contraseña',
+                    confirmPass: 'Confirmar contraseña',
+                    button: 'Crear cuenta',
+                    loginPrompt: '¿Ya tienes una cuenta?',
+                    loginLink: 'Iniciar sesión',
+                    or: 'o regístrate con correo electrónico',
+                    terms: 'Acepto los',
+                    termsLink: 'Términos de servicio',
+                    and: 'y',
+                    privacyLink: 'Política de privacidad'
+                },
+                'fr': {
+                    title: 'S\'inscrire sur ShikshaSetu',
+                    name: 'Nom complet',
+                    email: 'Adresse e-mail',
+                    createPass: 'Créer un mot de passe',
+                    confirmPass: 'Confirmez le mot de passe',
+                    button: 'Créer un compte',
+                    loginPrompt: 'Vous avez déjà un compte?',
+                    loginLink: 'Connexion',
+                    or: 'ou inscrivez-vous avec e-mail',
+                    terms: 'Je suis d\'accord avec les',
+                    termsLink: 'Conditions d\'utilisation',
+                    and: 'et',
+                    privacyLink: 'Politique de confidentialité'
+                }
+            };
+            
+            if (translations[lang]) {
+                document.getElementById('registerTitle').textContent = translations[lang].title;
+                document.getElementById('fullName').placeholder = translations[lang].name;
+                document.getElementById('email').placeholder = translations[lang].email;
+                document.getElementById('password').placeholder = translations[lang].createPass;
+                document.getElementById('confirmPassword').placeholder = translations[lang].confirmPass;
+                document.getElementById('registerButton').textContent = translations[lang].button;
+                document.getElementById('loginPrompt').innerHTML = 
+                    `${translations[lang].loginPrompt} <a href="login.html">${translations[lang].loginLink}</a>`;
+                document.querySelector('.divider').textContent = translations[lang].or;
+                document.querySelector('.terms-check label').innerHTML = 
+                    `${translations[lang].terms} <a href="#">${translations[lang].termsLink}</a> ${translations[lang].and} <a href="#">${translations[lang].privacyLink}</a>`;
+                
+                showNotification(`Language changed to ${this.options[this.selectedIndex].text}`, 'success');
+            }
+        });
+
+        // Form submission
+        registerForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const termsAgree = document.getElementById('termsAgree').checked;
+            const registerButton = document.getElementById('registerButton');
+            
+            // Save original button text
+            const originalText = registerButton.textContent;
+            
+            // Show loading state
+            registerButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+            registerButton.disabled = true;
+            
+            // Validate form
+            if (!termsAgree) {
+                showNotification('You must agree to the terms and privacy policy', 'error');
+                registerButton.textContent = originalText;
+                registerButton.disabled = false;
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showNotification('Passwords do not match', 'error');
+                registerButton.textContent = originalText;
+                registerButton.disabled = false;
+                
+                // Highlight password fields
+                document.getElementById('password').style.borderColor = '#F44336';
+                document.getElementById('confirmPassword').style.borderColor = '#F44336';
+                return;
+            }
+            
+            // Check password strength
+            const strength = parseInt(strengthBar.style.width) || 0;
+            if (strength < 75) {
+                showNotification('Please choose a stronger password', 'error');
+                registerButton.textContent = originalText;
+                registerButton.disabled = false;
+                return;
+            }
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showNotification('Please enter a valid email address', 'error');
+                registerButton.textContent = originalText;
+                registerButton.disabled = false;
+                return;
+            }
+            
+            try {
+                // Simulate API call with timeout
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Random chance of success for demo purposes
+                const success = Math.random() > 0.1;
+                
+                if (success) {
+                    showNotification('Account created successfully! Welcome to ShikshaSetu', 'success', 3000);
+                    
+                    // Trigger confetti effect
+                    confetti({
+                        particleCount: 150,
+                        spread: 80,
+                        origin: { y: 0.6 },
+                        colors: ['#ffcc00', '#ffffff', '#112762']
+                    });
+                    
+                    // Redirect after delay
+                    setTimeout(() => {
+                        window.location.href = "dashboard.html";
+                    }, 3000);
+                } else {
+                    // Simulate error
+                    throw new Error("Registration failed. Email may already be in use.");
+                }
+            } catch (error) {
+                showNotification(error.message || "Registration failed. Please try again.", 'error');
+                registerButton.textContent = originalText;
+                registerButton.disabled = false;
+            }
+        });
+
+        // Background video fallback
+        const bgVideo = document.getElementById('bgVideo');
+        bgVideo.addEventListener('error', function() {
+            // Fallback to gradient background if video fails to load
+            document.body.style.background = 'linear-gradient(135deg, #112762, #1a3a8f)';
+            document.body.style.backgroundAttachment = 'fixed';
+        });
+    </script>
+</body>
+</html>
