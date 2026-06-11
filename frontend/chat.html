@@ -4,22 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Chat - ShikshaSetu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-dark: #112762;
+            --primary-light: #1a3a8f;
+            --accent: #ffcc00;
+            --accent-light: #ffd633;
+            --text-dark: #333;
+            --text-light: #f5f5f5;
+            --ai-teacher: #4a6baf;
+            --ai-tutor: #6a4aaf;
+            --ai-peer: #4aaf6b;
+            --user-message: #ffcc00;
+        }
+        
         body {
-            background: #f5f5f5;
-            color: #333;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e5ec 100%);
+            color: var(--text-dark);
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
         }
+        
         header {
-            background: #112762;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
             padding: 15px 20px;
             font-size: 1.5rem;
             font-weight: bold;
-            color: #ffcc00;
+            color: var(--accent);
             text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -27,411 +43,1486 @@
             justify-content: space-between;
             align-items: center;
         }
+        
         .logo {
             font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+        
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+        }
+        
         .user-status {
             font-size: 0.9rem;
             background: rgba(255,255,255,0.2);
-            padding: 3px 10px;
+            padding: 5px 15px;
             border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .chat-container {
-            max-width: 800px;
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4caf50;
+        }
+        
+        .main-container {
+            display: flex;
+            max-width: 1400px;
             margin: 20px auto;
-            padding: 20px;
-            background: #112762;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(255, 204, 0, 0.3);
+            gap: 20px;
+            padding: 0 20px;
         }
+        
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+        
+        .sidebar-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .sidebar-icon {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .chat-topic {
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .chat-topic:hover {
+            background: rgba(17, 39, 98, 0.1);
+        }
+        
+        .chat-topic.active {
+            background: var(--primary-dark);
+            color: white;
+        }
+        
+        .ai-persona-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .persona-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .persona-option:hover {
+            background: rgba(17, 39, 98, 0.1);
+        }
+        
+        .persona-option.active {
+            background: rgba(17, 39, 98, 0.1);
+            font-weight: 500;
+        }
+        
+        .persona-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .persona-color.teacher {
+            background: var(--ai-teacher);
+        }
+        
+        .persona-color.tutor {
+            background: var(--ai-tutor);
+        }
+        
+        .persona-color.peer {
+            background: var(--ai-peer);
+        }
+        
+        .study-tools {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .study-tool {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+        
+        .study-tool:hover {
+            border-color: var(--primary-dark);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .tool-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .chat-container {
+            flex-grow: 1;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
         .chat-header {
-            color: #ffcc00;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+        
+        .chat-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-control {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .chat-control:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
         .chat-messages {
+            flex-grow: 1;
             height: 500px;
             overflow-y: auto;
-            background: #fff;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
+            background: #f9f9f9;
         }
+        
         .message {
             max-width: 75%;
-            padding: 10px 15px;
+            padding: 12px 16px;
             margin-bottom: 15px;
             border-radius: 18px;
             word-wrap: break-word;
             position: relative;
             animation: fadeIn 0.3s ease-out;
+            line-height: 1.4;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
         .sent {
             align-self: flex-end;
-            background: #ffcc00;
-            color: #112762;
+            background: var(--user-message);
+            color: var(--primary-dark);
             border-bottom-right-radius: 5px;
         }
+        
         .received {
             align-self: flex-start;
-            background: #e5e5ea;
-            color: #000;
+            background: white;
+            color: var(--text-dark);
             border-bottom-left-radius: 5px;
+            border: 1px solid #e0e0e0;
         }
+        
+        .received.teacher {
+            border-left: 4px solid var(--ai-teacher);
+        }
+        
+        .received.tutor {
+            border-left: 4px solid var(--ai-tutor);
+        }
+        
+        .received.peer {
+            border-left: 4px solid var(--ai-peer);
+        }
+        
+        .chat-input-container {
+            padding: 15px 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            position: relative;
+        }
+        
         .chat-input {
             display: flex;
             gap: 10px;
+            position: relative;
         }
+        
         input {
             flex-grow: 1;
             padding: 12px 15px;
-            border: none;
+            border: 1px solid #e0e0e0;
             border-radius: 25px;
             font-size: 1rem;
-            background: rgba(255,255,255,0.9);
+            background: white;
+            transition: all 0.2s;
+            padding-right: 50px;
         }
-        button {
-            background: #ffcc00;
-            color: #112762;
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary-dark);
+            box-shadow: 0 0 0 2px rgba(17, 39, 98, 0.2);
+        }
+        
+        .input-buttons {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 5px;
+        }
+        
+        .input-button {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        
+        .input-button:hover {
+            background: #f0f0f0;
+            color: var(--primary-dark);
+        }
+        
+        button.send-button {
+            background: var(--primary-dark);
+            color: white;
             border: none;
             padding: 0 25px;
             border-radius: 25px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        button:hover {
-            background: #ffd633;
+        
+        button.send-button:hover {
+            background: var(--primary-light);
             transform: scale(1.02);
         }
-        button:active {
+        
+        button.send-button:active {
             transform: scale(0.98);
         }
+        
         .user-info {
             font-size: 0.75rem;
-            margin-bottom: 3px;
+            margin-bottom: 5px;
             font-weight: bold;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
+        
         .sent .user-info {
-            color: #112762;
+            color: var(--primary-dark);
         }
+        
         .received .user-info {
             color: #555;
         }
+        
         .typing-indicator {
             align-self: flex-start;
-            background: #e5e5ea;
+            background: white;
             color: #555;
-            padding: 8px 15px;
+            padding: 10px 15px;
             border-radius: 18px;
             margin-bottom: 10px;
             display: inline-block;
             font-size: 0.9rem;
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid var(--ai-teacher);
         }
+        
         .typing-dots {
             display: inline-flex;
             align-items: center;
+            margin-left: 5px;
         }
+        
         .typing-dots span {
-            height: 8px;
-            width: 8px;
+            height: 6px;
+            width: 6px;
             margin: 0 2px;
             background-color: #555;
             border-radius: 50%;
             display: inline-block;
             animation: typingAnimation 1.4s infinite both;
         }
+        
         .typing-dots span:nth-child(2) {
             animation-delay: 0.2s;
         }
+        
         .typing-dots span:nth-child(3) {
             animation-delay: 0.4s;
         }
+        
         @keyframes typingAnimation {
             0%, 80%, 100% { transform: scale(0); }
             40% { transform: scale(1); }
         }
+        
         .timestamp {
             opacity: 0.7;
             font-size: 0.7rem;
+            font-weight: normal;
         }
+        
         .ai-label {
-            background: #112762;
+            background: var(--primary-dark);
             color: white;
-            padding: 2px 6px;
+            padding: 2px 8px;
             border-radius: 10px;
             font-size: 0.6rem;
             margin-left: 5px;
         }
+        
+        .message-actions {
+            position: absolute;
+            top: -15px;
+            right: 10px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: none;
+            overflow: hidden;
+        }
+        
+        .message:hover .message-actions {
+            display: flex;
+        }
+        
+        .message-action {
+            padding: 5px;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.2s;
+        }
+        
+        .message-action:hover {
+            color: var(--primary-dark);
+            background: #f0f0f0;
+        }
+        
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .quick-reply {
+            background: rgba(17, 39, 98, 0.1);
+            color: var(--primary-dark);
+            border: none;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-reply:hover {
+            background: rgba(17, 39, 98, 0.2);
+        }
+        
+        .knowledge-card {
+            background: white;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .knowledge-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary-dark);
+        }
+        
+        .knowledge-content {
+            font-size: 0.9rem;
+        }
+        
+        .suggested-questions {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #e0e0e0;
+        }
+        
+        .suggested-title {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .suggested-question {
+            color: var(--primary-dark);
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .suggested-question:hover {
+            color: var(--primary-light);
+        }
+        
+        .math-equation {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            background: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 8px 0;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin: 15px 0;
+            height: 6px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary-light));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .learning-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-dark);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        .avatar.teacher {
+            background: var(--ai-teacher);
+        }
+        
+        .avatar.tutor {
+            background: var(--ai-tutor);
+        }
+        
+        .avatar.peer {
+            background: var(--ai-peer);
+        }
+        
+        .avatar.user {
+            background: var(--user-message);
+            color: var(--primary-dark);
+        }
+        
+        .user-info-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .message-content {
+            position: relative;
+        }
+        
+        .message-tools {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: none;
+        }
+        
+        .message:hover .message-tools {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .message-tool {
+            background: rgba(255,255,255,0.8);
+            border: 1px solid #e0e0e0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .message-tool:hover {
+            background: white;
+            border-color: var(--primary-dark);
+        }
+        
+        .multi-modal {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .modal-item {
+            max-width: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .modal-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .modal-caption {
+            padding: 5px;
+            font-size: 0.7rem;
+            background: white;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: auto;
+                position: static;
+                height: auto;
+            }
+            
+            .chat-container {
+                min-height: 70vh;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .message {
+                max-width: 85%;
+            }
+        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo">ShikshaSetu AI</div>
-        <div class="user-status">Student Mode</div>
-    </header>
-
-    <div class="chat-container">
-        <div class="chat-header">
-            <div>Classroom Chat Assistant</div>
-        </div>
-        <div class="chat-messages" id="chat-messages">
-            <!-- Initial AI welcome message -->
-            <div class="message received">
-                <div class="user-info">
-                    <span>ShikshaSetu AI <span class="ai-label">TEACHER ASSISTANT</span></span>
-                    <span class="timestamp">Just now</span>
-                </div>
-                Welcome to ShikshaSetu Classroom Chat! I'm your AI teaching assistant. How can I help you with your studies today?
-            </div>
-        </div>
-        <div class="chat-input">
-            <input type="text" id="message-input" placeholder="Ask about math, science, assignments..." autocomplete="off">
-            <button id="send-button">Send</button>
+<div class="chat-container">
+    <div class="chat-header">
+        <div>Classroom Chat Assistant</div>
+        <div class="chat-controls">
+            <button class="chat-control" title="Clear conversation">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+            </button>
+            <button class="chat-control" title="Export conversation">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 3v12m0 0l-4-4m4 4l4-4M3 15a9 9 0 1 0 18 0 9 9 0 0 0-18 0z"></path>
+                </svg>
+            </button>
         </div>
     </div>
+    <div class="chat-messages" id="chat-messages">
+        <!-- Initial AI welcome message -->
+        <div class="message received teacher">
+            <div class="user-info">
+                <div class="user-info-container">
+                    <div class="avatar teacher">AI</div>
+                    <span>ShikshaSetu AI <span class="ai-label">TEACHER ASSISTANT</span></span>
+                </div>
+                <span class="timestamp">Just now</span>
+            </div>
+            <div class="message-content">
+                Welcome to ShikshaSetu Classroom Chat! I'm your AI teaching assistant. How can I help you with your studies today?
+                
+                <div class="suggested-questions">
+                    <div class="suggested-title">You might want to ask:</div>
+                    <div class="suggested-question">Explain quadratic equations</div>
+                    <div class="suggested-question">Help with my physics homework</div>
+                    <div class="suggested-question">Create a study plan for my history exam</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="chat-input-container">
+        <div class="chat-input">
+            <input type="text" id="message-input" placeholder="Ask about math, science, assignments..." autocomplete="off">
+            <div class="input-buttons">
+                <button class="input-button" title="Attach file">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </button>
+                <button class="input-button" title="Record voice">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="quick-replies">
+            <button class="quick-reply">Explain algebra basics</button>
+            <button class="quick-reply">Science project ideas</button>
+            <button class="quick-reply">Help with homework</button>
+        </div>
+        <button class="send-button" id="send-button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+            Send
+        </button>
+    </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const messageInput = document.getElementById('message-input');
-            const sendButton = document.getElementById('send-button');
-            const chatMessages = document.getElementById('chat-messages');
-            
-            // User profile
-            const currentUser = {
-                id: 'student_user',
-                name: 'You',
-                type: 'student'
-            };
-            
-            // AI personas
-            const aiPersonas = {
-                teacher: {
-                    id: 'ai_teacher',
-                    name: 'ShikshaSetu AI',
-                    type: 'teacher',
-                    style: 'formal',
-                    expertise: ['math', 'science', 'history', 'literature']
-                },
-                tutor: {
-                    id: 'ai_tutor',
-                    name: 'Study Tutor',
-                    type: 'tutor',
-                    style: 'friendly',
-                    expertise: ['homework help', 'study tips', 'exam prep']
-                },
-                peer: {
-                    id: 'ai_peer',
-                    name: 'Classmate',
-                    type: 'student',
-                    style: 'casual',
-                    expertise: ['collaboration', 'group study', 'student perspective']
-                }
-            };
-            
-            // Knowledge base for different subjects
-            const knowledgeBase = {
-                math: {
-                    algebra: [
-                        "Algebra is about finding the unknown values in equations.",
-                        "Remember to perform the same operation on both sides of the equation.",
-                        "The quadratic formula is x = [-b ± √(b²-4ac)]/2a"
-                    ],
-                    geometry: [
-                        "The area of a triangle is 1/2 × base × height.",
-                        "Pythagorean theorem: a² + b² = c² for right triangles.",
-                        "The circumference of a circle is 2πr."
-                    ]
-                },
-                science: {
-                    physics: [
-                        "Newton's First Law: An object in motion stays in motion unless acted upon.",
-                        "Force equals mass times acceleration (F=ma).",
-                        "Energy cannot be created or destroyed, only transformed."
-                    ],
-                    chemistry: [
-                        "The periodic table organizes elements by atomic number.",
-                        "Chemical reactions involve breaking and forming bonds.",
-                        "pH scale measures acidity from 0 (acidic) to 14 (basic)."
-                    ]
-                },
-                general: [
-                    "Make sure to review your notes regularly for better retention.",
-                    "Breaking study sessions into 25-minute chunks can improve focus (Pomodoro technique).",
-                    "Don't hesitate to ask for clarification on concepts you find difficult.",
-                    "Teaching a concept to someone else is a great way to reinforce your own understanding."
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const chatMessages = document.getElementById('chat-messages');
+        const quickReplies = document.querySelectorAll('.quick-reply');
+        const chatTopics = document.querySelectorAll('.chat-topic');
+        const personaOptions = document.querySelectorAll('.persona-option');
+        const studyTools = document.querySelectorAll('.study-tool');
+        const chatControls = document.querySelectorAll('.chat-control');
+        const suggestedQuestions = document.querySelectorAll('.suggested-question');
+        
+        // User profile
+        const currentUser = {
+            id: 'student_user',
+            name: 'You',
+            type: 'student'
+        };
+        
+        // AI personas
+        const aiPersonas = {
+            teacher: {
+                id: 'ai_teacher',
+                name: 'ShikshaSetu AI',
+                type: 'teacher',
+                style: 'formal',
+                expertise: ['math', 'science', 'history', 'literature'],
+                avatar: 'AI'
+            },
+            tutor: {
+                id: 'ai_tutor',
+                name: 'Study Tutor',
+                type: 'tutor',
+                style: 'friendly',
+                expertise: ['homework help', 'study tips', 'exam prep'],
+                avatar: 'ST'
+            },
+            peer: {
+                id: 'ai_peer',
+                name: 'Classmate',
+                type: 'student',
+                style: 'casual',
+                expertise: ['collaboration', 'group study', 'student perspective'],
+                avatar: 'CM'
+            }
+        };
+        
+        // Current settings
+        let currentSettings = {
+            persona: 'teacher', // Default to teacher
+            topic: 'all', // Default to all topics
+            learningProgress: 0
+        };
+        
+        // Knowledge base for different subjects
+        const knowledgeBase = {
+            math: {
+                algebra: [
+                    "Algebra is about finding unknown values in equations using variables. The basic principle is to perform the same operation on both sides of the equation to maintain equality.",
+                    "Quadratic equations take the form ax² + bx + c = 0. The quadratic formula x = [-b ± √(b²-4ac)]/2a gives the solutions.",
+                    "Linear equations (y = mx + b) graph as straight lines, where m is the slope and b is the y-intercept."
+                ],
+                geometry: [
+                    "The area of a triangle is 1/2 × base × height. For right triangles, the Pythagorean theorem applies: a² + b² = c².",
+                    "Circles have circumference 2πr and area πr². π (pi) is approximately 3.14159.",
+                    "Volume formulas: Cube = s³, Sphere = (4/3)πr³, Cylinder = πr²h."
+                ],
+                calculus: [
+                    "Derivatives measure rates of change. The derivative of x² is 2x, showing how the function changes at any point.",
+                    "Integrals calculate accumulated quantities. The integral of 2x is x² + C, representing the area under the curve.",
+                    "The Fundamental Theorem of Calculus connects differentiation and integration as inverse operations."
                 ]
-            };
-            
-            // Send message function
-            function sendMessage() {
-                const messageText = messageInput.value.trim();
-                if (messageText) {
-                    // Display user message
-                    displayMessage(currentUser.id, messageText, new Date(), currentUser);
-                    messageInput.value = '';
-                    
-                    // Show typing indicator
-                    showTypingIndicator();
-                    
-                    // Process message and generate AI response after a delay
-                    setTimeout(() => {
-                        removeTypingIndicator();
-                        const aiResponse = generateAIResponse(messageText);
-                        displayMessage(aiResponse.sender.id, aiResponse.text, new Date(), aiResponse.sender);
-                    }, 1000 + Math.random() * 2000);
-                }
-            }
-            
-            // Show typing indicator
-            function showTypingIndicator() {
-                const typingElement = document.createElement('div');
-                typingElement.classList.add('typing-indicator');
-                typingElement.id = 'typing-indicator';
-                typingElement.innerHTML = `
-                    <span>${selectRandomAI().name} is typing</span>
-                    <span class="typing-dots">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </span>
-                `;
-                chatMessages.appendChild(typingElement);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-            
-            // Remove typing indicator
-            function removeTypingIndicator() {
-                const typingElement = document.getElementById('typing-indicator');
-                if (typingElement) {
-                    typingElement.remove();
-                }
-            }
-            
-            // Select appropriate AI persona based on message
-            function selectRandomAI() {
-                // 60% chance for teacher, 30% for tutor, 10% for peer
-                const rand = Math.random();
-                if (rand < 0.6) return aiPersonas.teacher;
-                if (rand < 0.9) return aiPersonas.tutor;
-                return aiPersonas.peer;
-            }
-            
-            // Generate AI response based on user message
-            function generateAIResponse(userMessage) {
-                const aiPersona = selectRandomAI();
-                let responseText = '';
-                
-                // Check for specific subject queries
-                const lowerMessage = userMessage.toLowerCase();
-                
-                if (lowerMessage.includes('math') || lowerMessage.includes('algebra') || lowerMessage.includes('geometry')) {
-                    const mathCategory = lowerMessage.includes('geometry') ? 'geometry' : 'algebra';
-                    responseText = getRandomResponse(knowledgeBase.math[mathCategory]);
-                } 
-                else if (lowerMessage.includes('science') || lowerMessage.includes('physics') || lowerMessage.includes('chemistry')) {
-                    const scienceCategory = lowerMessage.includes('physics') ? 'physics' : 'chemistry';
-                    responseText = getRandomResponse(knowledgeBase.science[scienceCategory]);
-                }
-                else if (lowerMessage.includes('help') || lowerMessage.includes('homework') || lowerMessage.includes('assignment')) {
-                    responseText = getRandomResponse([
-                        "For homework help, try breaking the problem into smaller steps.",
-                        "Make sure you understand the core concepts before attempting the assignment.",
-                        "Have you checked the textbook examples? They often provide good guidance."
-                    ]);
-                }
-                else if (lowerMessage.includes('exam') || lowerMessage.includes('test') || lowerMessage.includes('study')) {
-                    responseText = getRandomResponse([
-                        "Active recall and spaced repetition are effective study techniques.",
-                        "Create a study schedule to cover all topics before the exam.",
-                        "Practice with past exam papers to understand the question patterns."
-                    ]);
-                }
-                else {
-                    // General response
-                    responseText = getRandomResponse(knowledgeBase.general);
-                }
-                
-                // Adjust response style based on AI persona
-                if (aiPersona.style === 'formal') {
-                    responseText = "From an instructional perspective, " + responseText.toLowerCase();
-                }
-                else if (aiPersona.style === 'friendly') {
-                    responseText = "Here's a helpful tip: " + responseText;
-                }
-                else {
-                    responseText = "I think " + responseText.toLowerCase();
-                }
-                
-                // Add persona-specific closing
-                if (aiPersona.type === 'teacher') {
-                    const closings = [
-                        " Let me know if you need further clarification.",
-                        " Does this answer your question?",
-                        " Would you like me to explain any part in more detail?"
-                    ];
-                    responseText += getRandomResponse(closings);
-                }
-                
-                return {
-                    sender: aiPersona,
-                    text: responseText
-                };
-            }
-            
-            // Helper function to get random response from array
-            function getRandomResponse(responses) {
-                return responses[Math.floor(Math.random() * responses.length)];
-            }
-            
-            // Display message in chat
-            function displayMessage(senderId, text, timestamp, senderInfo) {
-                const isCurrentUser = senderId === currentUser.id;
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('message');
-                messageElement.classList.add(isCurrentUser ? 'sent' : 'received');
-                
-                const timeString = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const aiLabel = senderInfo.type === 'teacher' ? 
-                    '<span class="ai-label">TEACHER ASSISTANT</span>' : 
-                    (senderInfo.type === 'tutor' ? '<span class="ai-label">TUTOR</span>' : '');
-                
-                messageElement.innerHTML = `
-                    <div class="user-info">
-                        <span>${senderInfo.name} ${aiLabel}</span>
-                        <span class="timestamp">${timeString}</span>
-                    </div>
-                    ${text}
-                `;
-                
-                chatMessages.appendChild(messageElement);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-            
-            // Event listeners
+            },
+            science: {
+                physics: [
+                    "Newton's Laws: 1) Objects in motion stay in motion unless acted upon. 2) F=ma. 3) For every action there's an equal and opposite reaction.",
+                    "Energy cannot be created or destroyed, only transformed (Law of Conservation of Energy). Kinetic energy = ½mv², Potential energy = mgh.",
+                    "Electric circuits follow Ohm's Law: V=IR, where V is voltage, I is current, and R is resistance."
+                ],
+                chemistry: [
+                    "The periodic table organizes elements by atomic number. Elements in the same column (group) have similar chemical properties.",
+                    "Chemical reactions involve breaking and forming bonds. Balanced equations show equal numbers of each atom on both sides.",
+                    "pH scale measures acidity from 0 (acidic) to 14 (basic), with 7 being neutral. pH = -log[H⁺]."
+                ],
+                biology: [
+                    "Cells are the basic units of life. Animal cells have membranes, nuclei, and organelles; plant cells also have cell walls and chloroplasts.",
+                    "DNA contains genetic instructions as a double helix of nucleotide base pairs (A-T, C-G).",
+                    "Natural selection drives evolution: organisms with advantageous traits are more likely to survive and reproduce."
+                ]
+            },
+            history: {
+                ancient: [
+                    "Ancient civilizations like Mesopotamia, Egypt, and the Indus Valley developed writing, agriculture, and complex societies.",
+                    "The Roman Empire influenced law, government, engineering, and language across Europe and beyond.",
+                    "The Silk Road connected East and West, facilitating trade of goods, ideas, and technologies."
+                ],
+                modern: [
+                    "The Industrial Revolution (18th-19th centuries) transformed economies from agrarian to industrial, with new technologies and urbanization.",
+                    "World Wars I and II reshaped global politics, leading to the Cold War and decolonization movements.",
+                    "The Digital Revolution (late 20th century) brought computers, the internet, and rapid technological advancement."
+                ]
+            },
+            literature: {
+                analysis: [
+                    "Literary analysis examines themes, symbols, character development, and author's purpose in a work.",
+                    "Common themes include good vs. evil, coming of age, love, power, and the human condition.",
+                    "Symbolism uses objects, characters, or colors to represent deeper meanings (e.g., a dove for peace)."
+                ],
+                genres: [
+                    "Major genres include fiction (novels, short stories), poetry, drama, and nonfiction (biographies, essays).",
+                    "Subgenres like science fiction, fantasy, mystery, and historical fiction have distinct conventions.",
+                    "Literary movements (Romanticism, Modernism, Postmodernism) reflect changing philosophies and styles."
+                ]
+            },
+            study: {
+                techniques: [
+                    "Active recall: Test yourself without looking at materials to strengthen memory.",
+                    "Spaced repetition: Review information at increasing intervals to combat forgetting.",
+                    "The Feynman Technique: Explain concepts in simple terms to identify gaps in understanding."
+                ],
+                planning: [
+                    "Break study sessions into 25-minute focused blocks with 5-minute breaks (Pomodoro technique).",
+                    "Create a study schedule that allocates time based on exam dates and topic difficulty.",
+                    "Prioritize challenging material when your mind is freshest, usually earlier in the day."
+                ]
+            },
+            general: [
+                "Make sure to review your notes regularly for better retention - daily reviews are most effective.",
+                "Teaching a concept to someone else is one of the best ways to reinforce your own understanding.",
+                "Don't hesitate to ask for clarification on concepts you find difficult - that's how learning happens!",
+                "Connect new information to what you already know to create stronger memory associations."
+            ]
+        };
+        
+        // Initialize the app
+        function init() {
+            // Set up event listeners
             sendButton.addEventListener('click', sendMessage);
-            
             messageInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     sendMessage();
                 }
             });
             
+            // Quick replies
+            quickReplies.forEach(reply => {
+                reply.addEventListener('click', function() {
+                    messageInput.value = this.textContent;
+                    messageInput.focus();
+                });
+            });
+            
+            // Suggested questions
+            suggestedQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    sendMessage(this.textContent);
+                });
+            });
+            
+            // Chat topics
+            chatTopics.forEach(topic => {
+                topic.addEventListener('click', function() {
+                    chatTopics.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    currentSettings.topic = this.textContent.toLowerCase().replace(' ', '-');
+                    updateChatHeader();
+                });
+            });
+            
+            // AI personas
+            personaOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    personaOptions.forEach(o => o.classList.remove('active'));
+                    this.classList.add('active');
+                    currentSettings.persona = this.dataset.persona;
+                });
+            });
+            
+            // Study tools
+            studyTools.forEach(tool => {
+                tool.addEventListener('click', function() {
+                    const toolName = this.textContent.trim();
+                    handleStudyTool(toolName);
+                });
+            });
+            
+            // Chat controls
+            chatControls[0].addEventListener('click', clearConversation);
+            chatControls[1].addEventListener('click', exportConversation);
+            
             // Focus input field on load
             messageInput.focus();
-        });
-    </script>
+        }
+        
+        // Update chat header based on current topic
+        function updateChatHeader() {
+            const header = document.querySelector('.chat-header div:first-child');
+            if (currentSettings.topic === 'all-subjects') {
+                header.textContent = 'Classroom Chat Assistant';
+            } else {
+                header.textContent = `${currentSettings.topic.charAt(0).toUpperCase() + currentSettings.topic.slice(1)} Assistant`;
+            }
+        }
+        
+        // Send message function
+        function sendMessage(predefinedMessage) {
+            const messageText = predefinedMessage || messageInput.value.trim();
+            if (messageText) {
+                // Display user message
+                displayMessage(currentUser, messageText, new Date());
+                
+                if (!predefinedMessage) {
+                    messageInput.value = '';
+                }
+                
+                // Show typing indicator
+                showTypingIndicator();
+                
+                // Process message and generate AI response after a delay
+                setTimeout(() => {
+                    removeTypingIndicator();
+                    const aiResponse = generateAIResponse(messageText);
+                    displayMessage(aiResponse.sender, aiResponse.text, new Date(), aiResponse.options);
+                    
+                    // Update learning progress
+                    updateLearningProgress(5);
+                }, 1000 + Math.random() * 2000);
+            }
+        }
+        
+        // Show typing indicator
+        function showTypingIndicator() {
+            const typingElement = document.createElement('div');
+            typingElement.classList.add('typing-indicator');
+            typingElement.id = 'typing-indicator';
+            
+            const aiPersona = getCurrentAI();
+            
+            typingElement.innerHTML = `
+                <div class="user-info">
+                    <div class="user-info-container">
+                        <div class="avatar ${aiPersona.type}">${aiPersona.avatar}</div>
+                        <span>${aiPersona.name} <span class="ai-label">${aiPersona.type.toUpperCase()}</span></span>
+                    </div>
+                </div>
+                <span>is typing</span>
+                <span class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            `;
+            chatMessages.appendChild(typingElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Remove typing indicator
+        function removeTypingIndicator() {
+            const typingElement = document.getElementById('typing-indicator');
+            if (typingElement) {
+                typingElement.remove();
+            }
+        }
+        
+        // Get current AI persona based on settings
+        function getCurrentAI() {
+            if (currentSettings.persona === 'auto') {
+                return selectAIByContext();
+            }
+            return aiPersonas[currentSettings.persona];
+        }
+        
+        // Select AI persona based on context
+        function selectAIByContext() {
+            // In a real app, this would use more sophisticated logic
+            // For demo purposes, we'll use a weighted random selection
+            const rand = Math.random();
+            if (rand < 0.6) return aiPersonas.teacher;
+            if (rand < 0.9) return aiPersonas.tutor;
+            return aiPersonas.peer;
+        }
+        
+        // Generate AI response based on user message
+        function generateAIResponse(userMessage) {
+            const aiPersona = getCurrentAI();
+            let responseText = '';
+            let responseOptions = {};
+            
+            // Check for specific subject queries
+            const lowerMessage = userMessage.toLowerCase();
+            
+            // Math queries
+            if (lowerMessage.includes('math') || lowerMessage.includes('algebra') || 
+                lowerMessage.includes('geometry') || lowerMessage.includes('calculus')) {
+                const mathCategory = 
+                    lowerMessage.includes('algebra') ? 'algebra' :
+                    lowerMessage.includes('geometry') ? 'geometry' :
+                    lowerMessage.includes('calculus') ? 'calculus' : 'algebra';
+                
+                responseText = getRandomResponse(knowledgeBase.math[mathCategory]);
+                responseOptions = {
+                    relatedQuestions: [
+                        `Show me an example of a ${mathCategory} problem`,
+                        `Explain ${mathCategory} concepts more simply`,
+                        `How is ${mathCategory} used in real life?`
+                    ]
+                };
+                
+                // Add math-specific formatting
+                if (mathCategory === 'algebra') {
+                    responseText += `\n\nFor example, to solve 2x + 3 = 7:\n` +
+                                   `1. Subtract 3 from both sides: 2x = 4\n` +
+                                   `2. Divide both sides by 2: x = 2`;
+                }
+            } 
+            // Science queries
+            else if (lowerMessage.includes('science') || lowerMessage.includes('physics') || 
+                     lowerMessage.includes('chemistry') || lowerMessage.includes('biology')) {
+                const scienceCategory = 
+                    lowerMessage.includes('physics') ? 'physics' :
+                    lowerMessage.includes('chemistry') ? 'chemistry' :
+                    lowerMessage.includes('biology') ? 'biology' : 'physics';
+                
+                responseText = getRandomResponse(knowledgeBase.science[scienceCategory]);
+                responseOptions = {
+                    relatedQuestions: [
+                        `What are the main concepts in ${scienceCategory}?`,
+                        `Explain a ${scienceCategory} experiment`,
+                        `How does ${scienceCategory} apply to everyday life?`
+                    ]
+                };
+            }
+            // History queries
+            else if (lowerMessage.includes('history') || lowerMessage.includes('ancient') || 
+                      lowerMessage.includes('modern') || lowerMessage.includes('war')) {
+                const historyCategory = 
+                    lowerMessage.includes('ancient') ? 'ancient' :
+                    lowerMessage.includes('modern') ? 'modern' : 'ancient';
+                
+                responseText = getRandomResponse(knowledgeBase.history[historyCategory]);
+                responseOptions = {
+                    relatedQuestions: [
+                        `Who were key figures in ${historyCategory} history?`,
+                        `What were major events in ${historyCategory} times?`,
+                        `How did ${historyCategory} civilizations influence today?`
+                    ]
+                };
+            }
+            // Literature queries
+            else if (lowerMessage.includes('literature') || lowerMessage.includes('book') || 
+                      lowerMessage.includes('poem') || lowerMessage.includes('story')) {
+                const literatureCategory = 
+                    lowerMessage.includes('analysis') ? 'analysis' :
+                    lowerMessage.includes('genre') ? 'genres' : 'analysis';
+                
+                responseText = getRandomResponse(knowledgeBase.literature[literatureCategory]);
+                responseOptions = {
+                    relatedQuestions: [
+                        `Analyze a specific literary work`,
+                        `Compare different literary genres`,
+                        `Explain common literary devices`
+                    ]
+                };
+            }
+            // Study help queries
+            else if (lowerMessage.includes('help') || lowerMessage.includes('homework') || 
+                      lowerMessage.includes('assignment') || lowerMessage.includes('study')) {
+                responseText = getRandomResponse(knowledgeBase.study.techniques) + '\n\n' + 
+                             getRandomResponse(knowledgeBase.study.planning);
+                responseOptions = {
+                    relatedQuestions: [
+                        'Create a study schedule for me',
+                        'How can I improve my memory?',
+                        'What are the best note-taking methods?'
+                    ]
+                };
+            }
+            else if (lowerMessage.includes('exam') || lowerMessage.includes('test') || 
+                      lowerMessage.includes('quiz')) {
+                responseText = getRandomResponse([
+                    "Active recall and spaced repetition are effective study techniques for exams.",
+                    "Create a study schedule to cover all topics before the exam, focusing more on challenging areas.",
+                    "Practice with past exam papers to understand question patterns and time management."
+                ]);
+                responseOptions = {
+                    relatedQuestions: [
+                        'How should I prepare the night before an exam?',
+                        'What are good strategies for multiple-choice tests?',
+                        'How can I reduce test anxiety?'
+                    ]
+                };
+            }
+            else {
+                // General response
+                responseText = getRandomResponse(knowledgeBase.general);
+                responseOptions = {
+                    relatedQuestions: [
+                        'How can I study more effectively?',
+                        'Explain the scientific method',
+                        'What are the branches of mathematics?'
+                    ]
+                };
+            }
+            
+            // Adjust response style based on AI persona
+            if (aiPersona.style === 'formal') {
+                responseText = "From an instructional perspective, " + responseText.toLowerCase();
+                if (!responseText.endsWith('.')) responseText += ".";
+                responseText += " Please let me know if you would like me to elaborate on any aspect.";
+            }
+            else if (aiPersona.style === 'friendly') {
+                responseText = "Here's something that might help: " + responseText;
+                if (!responseText.endsWith('!') && !responseText.endsWith('.')) {
+                    responseText += "!";
+                }
+            }
+            else {
+                responseText = "I think " + responseText.toLowerCase();
+                if (!responseText.endsWith('.')) responseText += ".";
+                responseText += " What do you think?";
+            }
+            
+            // Add multi-modal content for certain responses
+            if (Math.random() > 0.7) { // 30% chance of adding multi-modal content
+                responseOptions.multiModal = generateMultiModalContent(userMessage);
+            }
+            
+            return {
+                sender: aiPersona,
+                text: responseText,
+                options: responseOptions
+            };
+        }
+        
+        // Generate multi-modal content (images, diagrams, etc.)
+        function generateMultiModalContent(query) {
+            // In a real app, this would call an API or use a more sophisticated system
+            // For demo, we'll return placeholder content based on query
+            const lowerQuery = query.toLowerCase();
+            
+            if (lowerQuery.includes('math') || lowerQuery.includes('algebra') || 
+                lowerQuery.includes('geometry')) {
+                return {
+                    type: 'image',
+                    content: 'https://via.placeholder.com/300x200/4a6baf/ffffff?text=Math+Diagram',
+                    caption: 'Visual representation of the concept'
+                };
+            }
+            else if (lowerQuery.includes('science') || lowerQuery.includes('physics') || 
+                     lowerQuery.includes('chemistry')) {
+                return {
+                    type: 'image',
+                    content: 'https://via.placeholder.com/300x200/6a4aaf/ffffff?text=Science+Diagram',
+                    caption: 'Scientific diagram illustrating the principle'
+                };
+            }
+            else if (lowerQuery.includes('history')) {
+                return {
+                    type: 'image',
+                    content: 'https://via.placeholder.com/300x200/4aaf6b/ffffff?text=Historical+Timeline',
+                    caption: 'Timeline of relevant historical events'
+                };
+            }
+            
+            return null;
+        }
+        
+        // Helper function to get random response from array
+        function getRandomResponse(responses) {
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+        
+        // Display message in chat
+        function displayMessage(sender, text, timestamp, options = {}) {
+            const isCurrentUser = sender.id === currentUser.id;
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.classList.add(isCurrentUser ? 'sent' : 'received');
+            
+            if (!isCurrentUser) {
+                messageElement.classList.add(sender.type);
+            }
+            
+            const timeString = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const aiLabel = !isCurrentUser ? 
+                `<span class="ai-label">${sender.type.toUpperCase()}</span>` : '';
+            
+            let messageContent = text;
+            
+            // Add multi-modal content if available
+            if (options.multiModal) {
+                if (options.multiModal.type === 'image') {
+                    messageContent += `
+                        <div class="multi-modal">
+                            <div class="modal-item">
+                                <img src="${options.multiModal.content}" alt="${options.multiModal.caption}">
+                                <div class="modal-caption">${options.multiModal.caption}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Add related questions if available
+            if (options.relatedQuestions && !isCurrentUser) {
+                messageContent += `
+                    <div class="suggested-questions">
+                        <div class="suggested-title">You might want to ask:</div>
+                        ${options.relatedQuestions.map(q => 
+                            `<div class="suggested-question">${q}</div>`
+                        ).join('')}
+                    </div>
+                `;
+            }
+            
+            messageElement.innerHTML = `
+                <div class="user-info">
+                    <div class="user-info-container">
+                        ${isCurrentUser ? 
+                            `<div class="avatar user">${sender.name.charAt(0)}</div>` : 
+                            `<div class="avatar ${sender.type}">${sender.avatar}</div>`
+                        }
+                        <span>${sender.name} ${aiLabel}</span>
+                    </div>
+                    <span class="timestamp">${timeString}</span>
+                </div>
+                <div class="message-content">
+                    ${messageContent}
+                    <div class="message-tools">
+                        <div class="message-tool" title="Copy">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                        </div>
+                        ${isCurrentUser ? `
+                            <div class="message-tool" title="Edit">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(messageElement);
+            
+            // Add event listeners for the new message's interactive elements
+            const newSuggestedQuestions = messageElement.querySelectorAll('.suggested-question');
+            newSuggestedQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    sendMessage(this.textContent);
+                });
+            });
+            
+            const copyButton = messageElement.querySelector('.message-tool[title="Copy"]');
+            if (copyButton) {
+                copyButton.addEventListener('click', function() {
+                    navigator.clipboard.writeText(text);
+                    showToast('Copied to clipboard!');
+                });
+            }
+            
+            const editButton = messageElement.querySelector('.message-tool[title="Edit"]');
+            if (editButton) {
+                editButton.addEventListener('click', function() {
+                    editMessage(messageElement, text);
+                });
+            }
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Edit a sent message
+        function editMessage(messageElement, originalText) {
+            const messageContent = messageElement.querySelector('.message-content');
+            const currentText = messageContent.firstChild.textContent;
+            
+            messageContent.innerHTML = `
+                <textarea class="edit-textarea">${currentText}</textarea>
+                <div class="edit-buttons">
+                    <button class="edit-save">Save</button>
+                    <button class="edit-cancel">Cancel</button>
+                </div>
+            `;
+            
+            const textarea = messageContent.querySelector('.edit-textarea');
+            textarea.focus();
+            textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+            
+            messageContent.querySelector('.edit-save').addEventListener('click', function() {
+                const newText = textarea.value.trim();
+                if (newText && newText !== currentText) {
+                    messageContent.innerHTML = newText;
+                    // In a real app, you would send this update to the server
+                } else {
+                    messageContent.innerHTML = currentText;
+                }
+            });
+            
+            messageContent.querySelector('.edit-cancel').addEventListener('click', function() {
+                messageContent.innerHTML = currentText;
+            });
+        }
+        
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        document.body.removeChild(toast);
+                    }, 300);
+                }, 2000);
+            }, 10);
+        }
+        
+        // Handle study tool selection
+        function handleStudyTool(toolName) {
+            let message = '';
+            
+            switch(toolName) {
+                case 'Quiz Me':
+                    message = "Let's create a quiz! What topic would you like to be quizzed on?";
+                    break;
+                case 'Flash Cards':
+                    message = "Flash cards are great for memorization. What terms or concepts would you like to include?";
+                    break;
+                case 'Mind Map':
+                    message = "Mind maps help visualize connections between ideas. What central concept should we map?";
+                    break;
+                case 'Timer':
+                    message = "Setting up a study timer. How long would you like to study? (e.g., 25 minutes)";
+                    break;
+                case 'Summarize':
+                    message = "I can help summarize key points. What text or topic should I summarize?";
+                    break;
+                case 'Explain':
+                    message = "I'll explain concepts in simple terms. What would you like me to explain?";
+                    break;
+                default:
+                    message = "Let me help you with your studies. What would you like to focus on?";
+            }
+            
+            sendMessage(message);
+        }
+        
+        // Update learning progress
+        function updateLearningProgress(points) {
+            currentSettings.learningProgress = Math.min(currentSettings.learningProgress + points, 100);
+            
+            // Update progress bar if it exists
+            let progressBar = document.querySelector('.progress-bar');
+            if (!progressBar) {
+                // Create progress bar if it doesn't exist
+                const progressContainer = document.createElement('div');
+                progressContainer.className = 'progress-container';
+                progressContainer.innerHTML = `
+                    <div class="progress-bar" style="width: ${currentSettings.learningProgress}%"></div>
+                    <div class="learning-stats">
+                        <span>Learning Progress</span>
+                        <span>${currentSettings.learningProgress}%</span>
+                    </div>
+                `;
+                chatMessages.appendChild(progressContainer);
+            } else {
+                progressBar.style.width = `${currentSettings.learningProgress}%`;
+                document.querySelector('.learning-stats span:last-child').textContent = 
+                    `${currentSettings.learningProgress}%`;
+            }
+        }
+        
+        // Clear conversation
+        function clearConversation() {
+            if (confirm('Are you sure you want to clear this conversation?')) {
+                chatMessages.innerHTML = `
+                    <div class="message received teacher">
+                        <div class="user-info">
+                            <div class="user-info-container">
+                                <div class="avatar teacher">AI</div>
+                                <span>ShikshaSetu AI <span class="ai-label">TEACHER ASSISTANT</span></span>
+                            </div>
+                            <span class="timestamp">Just now</span>
+                        </div>
+                        <div class="message-content">
+                            Conversation cleared. How can I help you with your studies today?
+                        </div>
+                    </div>
+                `;
+                
+                // Reset learning progress
+                currentSettings.learningProgress = 0;
+                const progressContainer = document.querySelector('.progress-container');
+                if (progressContainer) {
+                    progressContainer.remove();
+                }
+            }
+        }
+        
+        // Export conversation
+        function exportConversation() {
+            const messages = chatMessages.querySelectorAll('.message');
+            let exportText = 'ShikshaSetu AI Conversation\n\n';
+            
+            messages.forEach(message => {
+                const sender = message.querySelector('.user-info-container span').textContent;
+                const content = message.querySelector('.message-content').textContent;
+                const time = message.querySelector('.timestamp').textContent;
+                
+                exportText += `${sender} (${time}):\n${content}\n\n`;
+            });
+            
+            const blob = new Blob([exportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ShikshaSetu-Chat-Export.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('Conversation exported!');
+        }
+        
+        // Initialize the application
+        init();
+    });
+</script>
 </body>
 </html>
